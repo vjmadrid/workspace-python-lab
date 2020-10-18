@@ -957,6 +957,21 @@ help-test-goals:
 
 
 
+# **********************************
+# 		test
+# **********************************
+
+
+
+# *** test : Test goals ***
+test:
+	@$(MAKE_CMD) initial-template
+	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:test${RESET_FORMATTING} ${BOLD}(default-test)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+
+	@pytest
+
+
+
 
 
 # **********************************		
@@ -984,6 +999,31 @@ help-qa-goals:
 
 
 # **********************************
+# 		pylint
+# **********************************
+
+
+# *** pylint : xxx ***
+pylint:
+	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:pylint${RESET_FORMATTING} ${BOLD}(default-pylint)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@pylint --rcfile=setup.cfg *.py
+
+
+
+# **********************************
+# 		flake8
+# **********************************
+
+
+
+# *** flake8 : xxx ***
+flake8:
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:flake8${RESET_FORMATTING} ${BOLD}(default-flake8)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@flake8
+
+
+
+# **********************************
 # 		lint
 # **********************************
 
@@ -992,14 +1032,15 @@ help-qa-goals:
 # *** lint ***
 lint:
 	@$(MAKE_CMD) initial-template
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:lint${RESET_FORMATTING} ${BOLD}(default-lint)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:lint${RESET_FORMATTING} ${BOLD}(default-lint)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:lint:flake8${RESET_FORMATTING} ${BOLD}(default-flake8)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
-	@flake8
 
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:lint:pylint${RESET_FORMATTING} ${BOLD}(default-pylint)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
-	@pylint --rcfile=setup.cfg *.py
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@$(MAKE_CMD) pylint
+
 	@$(MAKE_CMD) end-template
+
 
 
 
@@ -1025,8 +1066,7 @@ lint:
 # *** help-docker-goals : Docker goals ***
 help-docker-goals:
 	@echo -e "Docker Goals:"
-	@echo -e "\t${TEXT_GREEN}xxx${RESET_FORMATTING}\t\t\t xxx"
-	@echo -e "\t${TEXT_GREEN}clean-docker${RESET_FORMATTING}\t\t\t xxx"
+	@echo -e "\t${TEXT_GREEN}clean-docker${RESET_FORMATTING}\t\t\t\t xxx"
 	@echo -e "\t${TEXT_GREEN}build-docker-dev${RESET_FORMATTING}\t\t\t xxx"
 
 
@@ -1039,7 +1079,8 @@ help-docker-goals:
 
 clean-docker:
 	@$(MAKE_CMD) initial-template
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:clean-docker${RESET_FORMATTING} ${BOLD}(default-clean-docker)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:clean-docker${RESET_FORMATTING} ${BOLD}(default-clean-docker)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	
 	@$(DOCKER_CMD) system prune -f --filter "label=name=$(MODULE)"
 	@$(MAKE_CMD) end-template
@@ -1050,18 +1091,34 @@ clean-docker:
 # 		build-docker-dev
 # **********************************
 
+
+
 # make build-dev NAME=victor VERSION=1.0.0
 build-docker-dev:
 	@$(MAKE_CMD) initial-template
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:build-docker-dev${RESET_FORMATTING} ${BOLD}(default-build-docker-dev)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
-	@echo " - Name: ${TEXT_GREEN}$(NAME)${RESET_FORMATTING}"
-	@echo " - Module: ${TEXT_GREEN}$(MODULE)${RESET_FORMATTING}"
-	@echo " - Version: ${TEXT_GREEN}$(VERSION)${RESET_FORMATTING}"
-	@echo " - Tag: ${TEXT_GREEN}$(TAG)${RESET_FORMATTING}"
-	@echo " - DOCKER_IMAGE: ${TEXT_GREEN}$(DOCKER_IMAGE)${RESET_FORMATTING}\n"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:build-docker-dev${RESET_FORMATTING} ${BOLD}(default-build-docker-dev)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@echo -e " - Name: ${TEXT_GREEN}$(NAME)${RESET_FORMATTING}"
+	@echo -e " - Module: ${TEXT_GREEN}$(MODULE)${RESET_FORMATTING}"
+	@echo -e " - Version: ${TEXT_GREEN}$(VERSION)${RESET_FORMATTING}"
+	@echo -e " - Tag: ${TEXT_GREEN}$(TAG)${RESET_FORMATTING}"
+	@echo -e " - DOCKER_IMAGE: ${TEXT_GREEN}$(DOCKER_IMAGE)${RESET_FORMATTING}\n"
+
 	@sed                                 \
 		-e 's|{NAME}|$(MODULE)|g'        \
 		-e 's|{VERSION}|$(TAG)|g'        \
 		dev.Dockerfile | $(DOCKER_CMD) build -t $(DOCKER_IMAGE):$(TAG) -f- .
+	
 	@$(MAKE_CMD) end-template
 
+
+
+# **********************************
+# 		build-docker-prod
+# **********************************
+
+
+
+build-docker-prod:
+	@$(MAKE_CMD) initial-template
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:build-docker-prod${RESET_FORMATTING} ${BOLD}(default-build-docker-prod)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+	@echo -e " - Name: ${TEXT_GREEN}$(NAME)${RESET_FORMATTING}"
