@@ -115,10 +115,12 @@ SHELL_FILE := ~/.zshrc
 #	* PYTHON_PATH 			: Variable containing the installed Python path in the system
 #	* PYTHON_VERSION 			: Variable containing the version of Python installed in the system (Python + Version)
 #	* PYTHON_VERSION_NUMBER 	: Variable containing the version number of Python installed on the system
+#	* PYTHON_VERSION_CODE		: Variable containing the code number of Python installed on the system (Remove '.' and generate value)
 
 PYTHON_PATH := $(shell which python)
 PYTHON_VERSION :=  $(shell python --version)
 PYTHON_VERSION_NUMBER := $(shell python -c "import platform; print(platform.python_version())")
+PYTHON_VERSION_CODE:= $(subst .,,$(PYTHON_VERSION_NUMBER))
 
 
 
@@ -178,26 +180,24 @@ DEFAULT_PYENV_ENV_ACTIVE_PATH := $(PYENV_ENVS_ACTIVE_PATH)/$(DEFAULT_VIRTUAL_ENV
 
 
 
-# Virtualenv Settings
+# **********************************
+# 	Virtual Environment Settings
+# **********************************
+
+# Virtual Environment Settings
 #	* VIRTUAL_ENV_NAME 			: Variable containing the name of the Python environment name used with pyenv or virtualenv -> "DEFAULT_VIRTUAL_ENV_NAME_PREFIX + PYTHON_VERSION_NUMBER
 
 VIRTUAL_ENV_NAME = $(DEFAULT_VIRTUAL_ENV_NAME)
 
 
 
-
-
 # **********************************
-# 		Virtual Env Settings
+# 		venv Settings
 # **********************************
 
-
-# * VIRTUAL_ENV_LOCAL_PATH 		: Variable containing the path of the Python environment used with pyenv or virtualenv
-VIRTUAL_ENV_LOCAL_PATH = $(PROJECT_CURRENT_PATH)/$(VIRTUAL_ENV_NAME)
-
-VIRTUAL_ENV_PATH := $(PYENV_VIRTUAL_ENV_PATH)
-
-
+# Virtual Environment Settings
+#	* VIRTUAL_ENV				: Variable containing the path of the Python environment activated for venv (Created when you run : venv activates XXX)
+VENV_ACTIVE_PATH = $(VIRTUAL_ENV)
 
 
 
@@ -305,7 +305,7 @@ TEST=KK
 # *** check_environment_variable : initial template ***
 check_environment_variable:
 ifdef $(ARG_ENV_VAR)
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var \t-> $($(ARG_ENV_VAR))"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var \t-> ${TEXT_GREEN}$($(ARG_ENV_VAR))${RESET_FORMATTING}"
 else
 	
 ifeq ($(ARG_ERROR),true)
@@ -413,7 +413,7 @@ help:
 	@echo -e ""
 	@$(MAKE_CMD) help-pyenv-venv-goals
 	@echo -e ""
-	@$(MAKE_CMD) help-virutalenv-goals
+	@$(MAKE_CMD) help-venv-goals
 	@echo -e ""
 	@$(MAKE_CMD) help-general-goals
 	@echo -e ""
@@ -533,6 +533,7 @@ info-python-template:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Python Path \t\t\t: ${TEXT_GREEN}$(PYTHON_PATH)${RESET_FORMATTING}"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Python Version \t\t: ${TEXT_GREEN}$(PYTHON_VERSION)${RESET_FORMATTING}"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Python Version Number \t: ${TEXT_GREEN}$(PYTHON_VERSION_NUMBER)${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Python Version Code \t\t: ${TEXT_GREEN}$(PYTHON_VERSION_CODE)${RESET_FORMATTING}"
 
 # *** info-python : Goal OS Setting Info***
 info-python: initial-template
@@ -562,9 +563,8 @@ info-python: initial-template
 # *** help-pyenv-goals : Help Pyenv goals***
 help-pyenv-goals:
 	@echo -e "Pyenv Goals:"
-	@echo -e "\t${TEXT_GREEN}info-pyenv${RESET_FORMATTING}\t\t show pyenv information"
-	@echo -e "\t${TEXT_GREEN}check-pyenv${RESET_FORMATTING}\t\t check environment variable for pyenv use"
-
+	@echo -e "\t${TEXT_GREEN}info-pyenv${RESET_FORMATTING}\t\t\t show pyenv information"
+	@echo -e "\t${TEXT_GREEN}check-pyenv${RESET_FORMATTING}\t\t\t check the validity of the execution environment for the use of pyenv"
 
 
 # **********************************
@@ -573,7 +573,7 @@ help-pyenv-goals:
 
 # *** help-pyenv-venv-goals : Help Pyenv venv goals***
 help-pyenv-venv-goals:
-	@echo -e "Pyenv venv Goals:"
+	@echo -e "Pyenv Venv Goals:"
 	@echo -e "\t${TEXT_GREEN}show-pyenv-venv${RESET_FORMATTING}\t\t show available virtual environments for pyenv use"
 	@echo -e "\t${TEXT_GREEN}create-pyenv-venv${RESET_FORMATTING}\t create virtual environment for pyenv use"
 	@echo -e "\t${TEXT_GREEN}destroy-pyenv-venv${RESET_FORMATTING}\t destroy virtual environment for pyenv use"
@@ -664,7 +664,7 @@ info-pyenv: initial-template
 # 		check-pyenv
 # **********************************
 
-# *** check-pyenv-common : check environment variable for pyenv use (common part)***
+# *** check-pyenv-common : check the validity of the execution environment for the use of pyenv (common part)***
 check-pyenv-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:check-venv-pyenv${RESET_FORMATTING} ${BOLD}(default-clean-venv-pyenv)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
@@ -676,7 +676,12 @@ check-pyenv-common:
 	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_SHELL ARG_ERROR=true
 	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_VERSION ARG_ERROR=false
 
-# *** check-pyenv : check environment variable for pyenv use***
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] ${TEXT_GREEN}The execution environment for the use of pyenv is SUCCESS${RESET_FORMATTING}"
+
+# *** check-pyenv : check the validity of the execution environment for the use of pyenv***
 check-pyenv:
 	@$(MAKE_CMD) initial-template
 	@$(MAKE_CMD) check-pyenv-common
@@ -775,7 +780,7 @@ ifdef PYENV_VERSION
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Then run this target again :"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}$(PYENV_CMD) destroy-pyenv-venv${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}make destroy-pyenv-venv${RESET_FORMATTING}"
 
 else
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Show Active Pyenv Virtual Environments \t-> ${TEXT_GREEN}Pyenv Virtual Environment is not active${RESET_FORMATTING}"
@@ -783,6 +788,11 @@ else
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Uninstall Pyenv Virtual Environment -> ${TEXT_GREEN}$(PYENV_CMD) uninstall -f $(VIRTUAL_ENV_NAME)${RESET_FORMATTING}"
 	@$(PYENV_CMD) uninstall -f $(VIRTUAL_ENV_NAME)
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] ${TEXT_GREEN}Destroy Pyenv Virtual Environment is SUCCESS${RESET_FORMATTING}"
 endif
 
 # *** destroy-pyenv-venv : destroy virtual environment for pyenv use***
@@ -807,15 +817,16 @@ destroy-pyenv-venv:
 
 
 # **********************************
-# 		help-virutalenv-goals
+# 		help-venv-goals
 # **********************************
 
-# *** help-virutalenv-goals : Virtualenv goals ***
-help-virutalenv-goals:
-	@echo -e "Virtualenv Goals:"
-	@echo -e "\t${TEXT_GREEN}clean-venv${RESET_FORMATTING}\t\t\t clean/delete the virtual environment local"
-	@echo -e "\t${TEXT_GREEN}install-venv${RESET_FORMATTING}\t\t\t cleanup all temporary files"
-	@echo -e "\t${TEXT_GREEN}freeze ${RESET_FORMATTING}\t\t\t write the requirements to file"
+# *** help-venv-goals : venv goals ***
+help-venv-goals:
+	@echo -e "Venv Goals:"
+	@echo -e "\t${TEXT_GREEN}info-venv${RESET_FORMATTING}\t\t\t show venv information"
+	@echo -e "\t${TEXT_GREEN}check-venv${RESET_FORMATTING}\t\t\t check the validity of the execution environment for the use of venv"
+	@echo -e "\t${TEXT_GREEN}create-venv${RESET_FORMATTING}\t\t\t create virtual environment for venv use"
+	@echo -e "\t${TEXT_GREEN}destroy-venv${RESET_FORMATTING}\t\t\t destroy virtual environment for venv use"
 
 
 
@@ -823,7 +834,7 @@ help-virutalenv-goals:
 # 		info-venv
 # **********************************
 
-# *** info-venv-template : Common Template virtualenv Setting Info***
+# *** info-venv-template : Common Template Venv Setting Info***
 info-venv-template:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:info-venv${RESET_FORMATTING} ${BOLD}(default-info-venv)${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
@@ -831,11 +842,10 @@ info-venv-template:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Virtual Env Default Name Prefix \t: ${TEXT_GREEN}$(DEFAULT_VIRTUAL_ENV_NAME_PREFIX)${RESET_FORMATTING}"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Virtual Env Default Name \t\t: ${TEXT_GREEN}$(DEFAULT_VIRTUAL_ENV_NAME)${RESET_FORMATTING}"
 
-# *** info-venv : Goal virtualenv Setting Info***
+# *** info-venv : Goal Venv Setting Info***
 info-venv: initial-template
 	@$(MAKE_CMD) info-venv-template
 	@$(MAKE_CMD) end-template
-
 
 
 
@@ -843,22 +853,35 @@ info-venv: initial-template
 # 		check-venv
 # **********************************
 
-# *** check-venv-common : check environment variable for virtualenv use (common part)***
+# *** check-venv-common : check the validity of the execution environment for the use of venv (common part)***
 check-venv-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:check-venv${RESET_FORMATTING} ${BOLD}(default-check-venv)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
+	@if [ $(PYTHON_VERSION_CODE) -gt 360 ]; then \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Verify that your Python version is higher than 3.6.0 -> ${TEXT_GREEN}$(PYTHON_VERSION_NUMBER)${RESET_FORMATTING}"; \
+	else \
+		echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}] Verify that your Python version is higher than 3.6.0 -> ${TEXT_YELLOW}$(PYTHON_VERSION_NUMBER) is invalid${RESET_FORMATTING}"; \
+		exit 1; \
+	fi
+
 ifdef PYENV_VERSION 
 	@echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}] Check if there is a virtual environment created for pyenv \t-> ${TEXT_YELLOW}$(PYENV_VERSION) is defined${RESET_FORMATTING}"
-else
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Check if there is a virtual environment created for pyenv \t-> ${TEXT_GREEN}There is NO virtual environment for PYENV${RESET_FORMATTING}"
+	exit 1
 endif
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Check environment variables :"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
-# *** check-venv : check environment variable for virtualenv use***
+	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=VIRTUAL_ENV ARG_ERROR=true
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] ${TEXT_GREEN}The execution environment for the use of venv is SUCCESS${RESET_FORMATTING}"
+
+# *** check-venv : check the validity of the execution environment for the use of venv***
 check-venv:
 	@$(MAKE_CMD) initial-template
 	@$(MAKE_CMD) check-venv-common
@@ -870,7 +893,7 @@ check-venv:
 # 		create-venv
 # **********************************
 
-# *** create-venv-common : create the local virtual environment local (common part)***
+# *** create-venv-common : create virtual environment for venv use (common part)***
 create-venv-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:create-venv${RESET_FORMATTING} ${BOLD}(default-create-venv)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
@@ -892,7 +915,7 @@ else
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}source $(VIRTUAL_ENV_NAME)/bin/activate${RESET_FORMATTING}"
 endif
 
-# *** create-venv : create the local virtual environment local***
+# *** create-venv : create virtual environment for venv use***
 create-venv:
 	@$(MAKE_CMD) initial-template
 	@$(MAKE_CMD) create-venv-common
@@ -904,12 +927,9 @@ create-venv:
 # 		destroy-venv
 # **********************************
 
-# *** destroy-venv-common : create the local virtual environment***
+# *** destroy-venv-common : destroy virtual environment for venv use (common part)***
 destroy-venv-common:
 	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:destroy-venv ${RESET_FORMATTING} ${BOLD}(default-destroy-venv )${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
-
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}]   - VIRTUAL_ENV_LOCAL_NAME : ${TEXT_GREEN}$(VIRTUAL_ENV_LOCAL_NAME)${RESET_FORMATTING}"
-	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}]   - VIRTUAL_ENV_LOCAL_PATH : ${TEXT_GREEN}$(VIRTUAL_ENV_LOCAL_PATH)${RESET_FORMATTING}"
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Show Pyenv Virtual Environment Name -> ${TEXT_GREEN}$(VIRTUAL_ENV_NAME)${RESET_FORMATTING}"
@@ -932,17 +952,22 @@ endif
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Then run this target again :"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}$(PYENV_CMD) destroy-venv${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}make destroy-venv${RESET_FORMATTING}"
 
 else
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Show Active Venv Virtual Environments \t-> ${TEXT_GREEN}Venv Virtual Environment is not active${RESET_FORMATTING}"
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Destroy Venv Virtual Environment -> ${TEXT_GREEN}rm -r $(VIRTUAL_ENV_NAME)/${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Delete Venv Virtual Environment -> ${TEXT_GREEN}rm -r $(VIRTUAL_ENV_NAME)/${RESET_FORMATTING}"
 	@rm -r $(VIRTUAL_ENV_NAME)/
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] ${TEXT_GREEN}Destroy Venv Virtual Environment is SUCCESS${RESET_FORMATTING}"
 endif
 
-# *** destroy-venv : destroy the local virtual environment local***
+# *** destroy-venv : destroy virtual environment for venv use***
 destroy-venv:
 	@$(MAKE_CMD) initial-template
 	@$(MAKE_CMD) destroy-venv-common
@@ -985,7 +1010,7 @@ clean:
 	@$(MAKE_CMD) initial-template
 	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:clean${RESET_FORMATTING} ${BOLD}(default-clean)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	
-	@rm -rf .pytest_cache __pycache__ .coverage coverage.xml build dist
+	@rm -rf .pytest_cache **/__pycache__ .coverage coverage.xml build dist
 	@$(MAKE_CMD) end-template
 
 
@@ -1027,6 +1052,8 @@ install:
 run: clean
 	@$(MAKE_CMD) initial-template
 	@echo "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:run${RESET_FORMATTING} ${BOLD}(default-run)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@python -m flask run
 	@$(MAKE_CMD) end-template
 
@@ -1051,7 +1078,26 @@ run: clean
 # *** help-test-goals : Test goals ***
 help-test-goals:
 	@echo -e "Test Goals:"
-	@echo -e "\t${TEXT_GREEN}xxx${RESET_FORMATTING}\t\t\t xxx"
+	@echo -e "\t${TEXT_GREEN}install-test-technology-stack${RESET_FORMATTING}\t\t\t install the testing technology stack selected for the version of Python used"
+
+
+
+# **********************************
+# 	install-test-technology-stack
+# **********************************
+
+# *** install-test-technology-stack : Install the testing technology stack selected for the version of Python used ***
+install-test-technology-stack:
+	@$(MAKE_CMD) initial-template
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:install-test-technology-stack${RESET_FORMATTING} ${BOLD}(default-install-test-technology-stack)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "pytest" -> ${TEXT_GREEN}$(PACKAGE_CMD) install pytest${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install pytest
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "pytest-cov" -> ${TEXT_GREEN}$(PACKAGE_CMD) install pytest-cov${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install pytest-cov
 
 
 
@@ -1088,7 +1134,31 @@ test:
 # *** help-qa-goals : QA goals ***
 help-qa-goals:
 	@echo -e "QA Goals:"
+	@echo -e "\t${TEXT_GREEN}install-qa-technology-stack${RESET_FORMATTING}\t\t\t install the QA technology stack selected for the version of Python used"
 	@echo -e "\t${TEXT_GREEN}xxx${RESET_FORMATTING}\t\t\t xxx"
+
+
+
+# **********************************
+# 	install-qa-technology-stack
+# **********************************
+
+# *** install-qa-technology-stack : Install the QA technology stack selected for the version of Python used ***
+install-qa-technology-stack:
+	@$(MAKE_CMD) initial-template
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:install-qa-technology-stack${RESET_FORMATTING} ${BOLD}(default-install-qa-technology-stack)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "flake8" -> ${TEXT_GREEN}$(PACKAGE_CMD) install flake8${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install flake8
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "pylint" -> ${TEXT_GREEN}$(PACKAGE_CMD) install pylint${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install pylint
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "bandit" -> ${TEXT_GREEN}$(PACKAGE_CMD) install bandit${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install bandit
 
 
 
@@ -1096,12 +1166,18 @@ help-qa-goals:
 # 		pylint
 # **********************************
 
-# *** pylint : xxx ***
-pylint:
+# *** pylint-common : xxx  (common part)***
+pylint-common: 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:pylint${RESET_FORMATTING} ${BOLD}(default-pylint)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
-	@pylint --rcfile=setup.cfg *.py
+	@pylint --rcfile=setup.cfg **/*.py
+
+# *** pylint : xxx ***
+pylint:
+	@$(MAKE_CMD) initial-template
+	@$(MAKE_CMD) pylint-common
+	@$(MAKE_CMD) end-template
 
 
 
@@ -1109,26 +1185,36 @@ pylint:
 # 		bandit
 # **********************************
 
-# *** bandit : xxx ***
-bandit:
+# *** bandit-common : xxx  (common part)***
+bandit-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:bandit${RESET_FORMATTING} ${BOLD}(default-bandit)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
-	@bandit
+	@bandit -r --ini setup.cfg
 
+# *** bandit : xxx ***
+bandit:
+	@$(MAKE_CMD) initial-template
+	@$(MAKE_CMD) bandit-common
+	@$(MAKE_CMD) end-template
 
 
 # **********************************
 # 		flake8
 # **********************************
 
-# *** flake8 : xxx ***
-flake8:
+# *** bandit-common : xxx  (flake8 part)***
+flake8-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- Executing ${TEXT_GREEN}makefile:flake8${RESET_FORMATTING} ${BOLD}(default-flake8)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
 	@flake8
 
+# *** flake8 : xxx ***
+flake8:
+	@$(MAKE_CMD) initial-template
+	@$(MAKE_CMD) flake8-common
+	@$(MAKE_CMD) end-template
 
 
 
@@ -1140,7 +1226,16 @@ flake8:
 lint:
 	@$(MAKE_CMD) initial-template
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:lint${RESET_FORMATTING} ${BOLD}(default-lint)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
+
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@$(MAKE_CMD) flake8-common
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@$(MAKE_CMD) pylint-common
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@$(MAKE_CMD) bandit-common
+	
 
 	@$(MAKE_CMD) end-template
 

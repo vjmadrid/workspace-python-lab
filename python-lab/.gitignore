@@ -63,6 +63,7 @@ env/
 .venv/
 venv/
 ENV/
+venv*/
 
 # Custom Visual Code IDE
 
@@ -78,3 +79,12 @@ ENV/
 # Ignore all local history of files
 .history
 .ionide
+
+# Confidential
+credentials.*
+
+# Certs
+*.srl
+*.csr
+*.key
+*.pem
