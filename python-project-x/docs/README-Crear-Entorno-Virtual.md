@@ -62,8 +62,15 @@ or
 
 $ git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 
+# Brew
+$ brew install pyenv-virtualenv
+
 # Cargar inicializador
 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+if which pyenv-virtualenv-init > /dev/null; then 
+ eval “$(pyenv virtualenv-init -)”;
+fi
 
 # Resetear ~/.zshrc
 $ source ~/.zshrc
@@ -78,10 +85,18 @@ $ pyenv versions
 # Crea un entorno virtual para la versión 3.9.0 con nombre venv
 $ pyenv virtualenv 3.9.0 venv
 
+# Crea un entorno virtual para la versión 3.9.0 con nombre venv
+$ pyenv virtualenv 3.9.0 venv3.9.0
+
 # Activar el entorno virtual
 $ pyenv activate venv
 
-# Verificar la version de python (Debería de mostrar una ruta como la siguiente : /home/staff/jmoreira/.pyenv/shims/python)
+$ pyenv activate venv3.9.0
+
+# Verificar virtualenvs
+$ pyenv virtualenvs
+
+# Verificar la version de python (Debería de mostrar una ruta como la siguiente : /home/staff/xxxx/.pyenv/shims/python)
 $ which python
 
 # Desactivar

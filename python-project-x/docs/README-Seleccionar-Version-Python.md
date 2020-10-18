@@ -79,6 +79,9 @@ Instalación
 # Instalación con brew
 $ brew install pyenv 
 
+# Instalacion con clone 
+$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+
 # Verificar la versión instalada
 $ pyenv --version
 
@@ -91,7 +94,11 @@ $ echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
 $ echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
 
 # Cargar inicializador
-echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+$ echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+
+# 
+
+$ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
 
 # Resetear ~/.zshrc
 source ~/.zshrc
@@ -103,26 +110,93 @@ brew install openssl readline sqlite3 xz zlib
 Uso
 
 ```bash
+
+# ###########################
+#     Pyenv Installation
+# ###########################
+
+# Verificar ubicación de instalación de pyenv
+$ which pyenv
+
+# Verificar version instalada de pyenv
+$ pyenv --version
+
+
+# Verificar ubicación de instalación de python
+$ which python
+
 # Verificar al versión de Python utilizada en el sistema
 $ python --version
 
-# Verificar versiones gestionadas
+
+
+# ###########################
+#    Basic Use
+# ###########################
+
+# Verificar versiones instaladas en la máquina (* is “current selected” version)
 $ pyenv versions
 
-# Listar versiones disponibles
+# Listar versiones disponibles para instalar
 $ pyenv install –list
 
-# Instalar Python 3.9.0
+# Instalar Python "3.9.0"
 $ pyenv install 3.9.0
 
-# Instalar Python 3.9.0 de forma global
+# Verificar que se ha instalado
+$ ls ~/.pyenv/versions/3.9.0
+
+# Verifocar qie esta referenciada como la instalación de la maquina
+$ cat ~/.pyenv/version
+
+# Verificar version “current selected”
+$ pyenv version
+
+
+# ###########################
+#    Global
+# ###########################
+
+# Verificar que instalación esta considerada como global -> Referenciada en ~/.pyenv/version
+$ pyenv global
+
+# Cambiar uso global de Python por otra version
 $ pyenv global 3.9.0
 
-# Instalar Python 3.9.0 de forma global
+# Verificar sus seleccion
+$ pyenv versions
+
+
+# ###########################
+#    Local
+#
+# Dentro del directorio del proyecto a utilizar
+#
+# ###########################
+
+# Instalar Python 3.9.0 de forma local -> añade este fichero .python-version
 $ pyenv local 3.9.0
 
-# Verificar la versión instalada
-$ pyenv --version
+# Verificar la versión instalada de forma local
+$ pyenv version
+
+
+
+# ###########################
+#    Shell
+# Genera una variable de entono PYENV_VERSION
+#
+# set PYENV_VERSION=3.9.0
+# ###########################
+
+# Preparar el entorno para la versión actualizada
+$ pyenv shell --unset
+
+# Preparar el entorno
+$ pyenv shell 3.9.0
+
+# Verificar variables de entorno
+printenv | grep PYENV_
 
 # Desinstalar una version
 $ pyenv uninstall 3.7.7
@@ -168,6 +242,10 @@ $ git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-
 
 # Cargar inicializador
 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+
+echo -e 'if which pyenv-virtualenv-init > /dev/null; then\n eval “$(pyenv virtualenv-init -)”;\nfi' >> ~/.zshrc
 
 # Resetear ~/.zshrc
 $ source ~/.zshrc
