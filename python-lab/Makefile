@@ -1,4 +1,12 @@
-# Makefile
+# *****************************************
+#                  _         __ _ _      
+#  _ __ ___   __ _| | _____ / _(_) | ___ 
+# | '_ ` _ \ / _` | |/ / _ \ |_| | |/ _ \
+# | | | | | | (_| |   <  __/  _| | |  __/
+# |_| |_| |_|\__,_|_|\_\___|_| |_|_|\___|
+#                                                            
+# *****************************************
+
 #
 # Author: vjmadrid
 # Last Change: March 1, 2020
@@ -112,7 +120,7 @@ SHELL_FILE := ~/.zshrc
 
 
 # Python Settings
-#	* PYTHON_PATH 			: Variable containing the installed Python path in the system
+#	* PYTHON_PATH 				: Variable containing the installed Python path in the system
 #	* PYTHON_VERSION 			: Variable containing the version of Python installed in the system (Python + Version)
 #	* PYTHON_VERSION_NUMBER 	: Variable containing the version number of Python installed on the system
 #	* PYTHON_VERSION_CODE		: Variable containing the code number of Python installed on the system (Remove '.' and generate value)
@@ -207,7 +215,7 @@ VENV_ACTIVE_PATH = $(VIRTUAL_ENV)
 
 
 
-# Tools Setup
+# Tools Settings
 #	* MAKE_TOOL 			: Makefile Tool
 #	* PYTHON_TOOL 			: Python Tool
 #	* PYENV_TOOL 			: Pyenv Tool
@@ -226,7 +234,7 @@ DOCKER_TOOL = docker
 
 
 
-# Commands
+# Commands Settings
 #	* MAKE_CMD 			: Tool execution command MAKE_TOOL
 #	* PYTHON_CMD 		: Tool execution command PYTHON_TOOL
 #	* PACKAGE_CMD 		: Tool execution command PACKAGE_TOOL
@@ -247,7 +255,7 @@ DOCKER_CMD = ${DOCKER_TOOL}
 
 
 # **********************************
-# 			Project Setup
+# 			Project Settings
 # **********************************
 
 
@@ -261,22 +269,35 @@ MODULE := helloworld
 
 
 # **********************************
-# 			Docker Setup
+# 			Docker Settings
 # **********************************
 
-# Commands
+# Docker Settings
+#	* DOCKER_PATH 				: Variable containing the installed Docker path in the system
+#	* DOCKER_VERSION 			: Variable containing the version of Docker installed in the system (Python + Version)
 #	* DOCKER_BUILD_CONTEXT 		: Tool execution command MAKE_TOOL
 #	* DOCKER_FILE_PATH 			: Tool execution command MAKE_TOOL
 
-DOCKER_VERSION := $(shell docker --version)
+DOCKER_PATH := $(shell which python)
+DOCKER_VERSION_NUMBER := $(shell docker --version)
+
+
+
+# Docker Build Settings
+
 DOCKER_BUILD_CONTEXT=.
-DOCKER_FILE_PATH=Dockerfile
-DOCKER_REGISTRY=docker.pkg.github.com/vjmadrid/python-lab
-DOCKER_IMAGE := $(DOCKER_REGISTRY)/$(MODULE)
+DOCKER_FILE_NAME=Dockerfile
+DOCKER_FILE_PATH=$(DOCKER_FILE_NAME)
 
 TAG :=v1.0
 DIRTY_TAG := $(shell git describe --tags --always --dirty)
 
+
+
+# Docker Registry Settings
+
+DOCKER_REGISTRY=docker.pkg.github.com/vjmadrid/python-lab
+DOCKER_IMAGE := $(DOCKER_REGISTRY)/$(MODULE)
 
 
 TEST=KK
@@ -302,23 +323,6 @@ TEST=KK
 
 
 
-# *** check_environment_variable : initial template ***
-check_environment_variable:
-ifdef $(ARG_ENV_VAR)
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var \t-> ${TEXT_GREEN}$($(ARG_ENV_VAR))${RESET_FORMATTING}"
-else
-	
-ifeq ($(ARG_ERROR),true)
-	@echo -e "[${TEXT_RED}WARN${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var \t-> ${TEXT_RED}$(ARG_ENV_VAR) is undefined${RESET_FORMATTING}"
-	@exit 1
-else
-	@echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var \t-> ${TEXT_YELLOW}$(ARG_ENV_VAR) is undefined${RESET_FORMATTING}"
-endif
-
-endif
-
-
-
 test-condition:
 	@echo $(TEST)
 
@@ -338,6 +342,29 @@ endif
 
 
 
+# **********************************
+# 		check_environment_variable
+# **********************************
+
+# *** check_environment_variable : initial template ***
+check_environment_variable:
+ifdef $(ARG_ENV_VAR)
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var -> ${TEXT_GREEN}$($(ARG_ENV_VAR))${RESET_FORMATTING}"
+else
+	
+ifeq ($(ARG_TYPE),ERROR)
+	@echo -e "[${TEXT_RED}ERROR${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var -> ${TEXT_RED}$(ARG_ENV_VAR) is undefined${RESET_FORMATTING}"
+	@exit 1
+endif
+
+ifeq ($(ARG_TYPE),WARN)
+	@echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var -> ${TEXT_YELLOW}$(ARG_ENV_VAR) is undefined${RESET_FORMATTING}"
+else
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t* Check $(ARG_ENV_VAR) Environment Var -> ${TEXT_GREEN}$(ARG_ENV_VAR) is undefined${RESET_FORMATTING}"
+endif
+
+endif
+
 
 
 # *****************************************************
@@ -350,6 +377,10 @@ endif
 # *****************************************************
 
 
+
+# **********************************
+# 		initial-template
+# **********************************
 
 # *** initial-template : initial template ***
 initial-template:
@@ -364,6 +395,10 @@ initial-template:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
 
+
+# **********************************
+# 		end-template
+# **********************************
 
 # *** end-template : end template ***
 # * EXECUTION_END_DATE : Variable containing the end date of the execution of the makefile
@@ -398,6 +433,10 @@ end-template:
 
 
 
+# **********************************
+# 		help
+# **********************************
+
 # *** help : show help info ***
 help:
 	@echo -e ""
@@ -425,6 +464,10 @@ help:
 	@echo -e ""
 
 
+
+# **********************************
+# 		info
+# **********************************
 
 # *** info ***
 info: initial-template
@@ -518,6 +561,7 @@ info-os: initial-template
 help-python-goals:
 	@echo -e "Python Goals:"
 	@echo -e "\t${TEXT_GREEN}info-python${RESET_FORMATTING}\t\t show python information"
+	@echo -e "\t${TEXT_GREEN}upgrade-pip${RESET_FORMATTING}\t\t upgrade pip"
 
 
 
@@ -542,6 +586,16 @@ info-python: initial-template
 
 
 
+# **********************************
+# 		upgrade-pip
+# **********************************
+
+# *** upgrade-pip : Upgrade pip***
+upgrade-pip:
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:upgrade-pip${RESET_FORMATTING} ${BOLD}(upgrade-pip)${RESET_FORMATTING} ---"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Upgrade pip -> ${TEXT_GREEN}$(PACKAGE_CMD) install --upgrade $(PACKAGE_TOOL)${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install --upgrade $(PACKAGE_TOOL)
 
 
 # *****************************************
@@ -672,9 +726,9 @@ check-pyenv-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Check environment variables :"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
-	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_ROOT ARG_ERROR=true
-	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_SHELL ARG_ERROR=true
-	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_VERSION ARG_ERROR=false
+	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_ROOT ARG_TYPE=ERROR
+	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_SHELL ARG_TYPE=ERROR
+	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=PYENV_VERSION ARG_TYPE=WARN
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"
@@ -853,6 +907,20 @@ info-venv: initial-template
 # 		check-venv
 # **********************************
 
+info-venv-active-template:
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] To Activate the Virtual Environment in your local shell require manual run :"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+
+ifeq ($(OS_DETECTED),Windows)
+    @echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\tDefault : ${TEXT_GREEN}C:>$(VIRTUAL_ENV_NAME)/Scripts/activate.bat${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\tPowershell : ${TEXT_GREEN}C:>$(VIRTUAL_ENV_NAME)/Scripts/Activate.ps1${RESET_FORMATTING}"
+else
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}source $(VIRTUAL_ENV_NAME)/bin/activate${RESET_FORMATTING}"
+endif
+
+
+
 # *** check-venv-common : check the validity of the execution environment for the use of venv (common part)***
 check-venv-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:check-venv${RESET_FORMATTING} ${BOLD}(default-check-venv)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
@@ -861,25 +929,56 @@ check-venv-common:
 	@if [ $(PYTHON_VERSION_CODE) -gt 360 ]; then \
 		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Verify that your Python version is higher than 3.6.0 -> ${TEXT_GREEN}$(PYTHON_VERSION_NUMBER)${RESET_FORMATTING}"; \
 	else \
-		echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}] Verify that your Python version is higher than 3.6.0 -> ${TEXT_YELLOW}$(PYTHON_VERSION_NUMBER) is invalid${RESET_FORMATTING}"; \
+		echo -e "[${TEXT_RED}ERROR${RESET_FORMATTING}] Verify that your Python version is higher than 3.6.0 -> ${TEXT_YELLOW}$(PYTHON_VERSION_NUMBER) is invalid${RESET_FORMATTING}"; \
 		exit 1; \
 	fi
 
-ifdef PYENV_VERSION 
-	@echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}] Check if there is a virtual environment created for pyenv \t-> ${TEXT_YELLOW}$(PYENV_VERSION) is defined${RESET_FORMATTING}"
+ifdef PYENV_VERSION
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}] Check if there is a virtual environment created for pyenv -> ${TEXT_YELLOW}$(PYENV_VERSION) is defined${RESET_FORMATTING}"
 	exit 1
 endif
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@if [ -d "./$(DEFAULT_VIRTUAL_ENV_NAME)" ]; then \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Check if exist venv directory -> ${TEXT_GREEN}$(DEFAULT_VIRTUAL_ENV_NAME) exist${RESET_FORMATTING}"; \
+	else \
+		echo -e "[${TEXT_YELLOW}WARN${RESET_FORMATTING}] Check if exist venv directory -> ${TEXT_YELLOW}$(DEFAULT_VIRTUAL_ENV_NAME) NO exist${RESET_FORMATTING}"; \
+	fi \
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Check environment variables :"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
-	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=VIRTUAL_ENV ARG_ERROR=true
+	@$(MAKE_CMD) check_environment_variable ARG_ENV_VAR=VIRTUAL_ENV ARG_TYPE=WARN
+ifndef VIRTUAL_ENV
 
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] ${TEXT_GREEN}The execution environment for the use of venv is SUCCESS${RESET_FORMATTING}"
+	@if [ -d "./$(DEFAULT_VIRTUAL_ENV_NAME)" ]; then \
+		$(MAKE_CMD) info-venv-active-template; \
+	else \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] To Create the Virtual Environment in your local shell require manual run :"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}make create-venv${RESET_FORMATTING}"; \
+	fi \
+
+else
+
+	@if [ -d "./$(DEFAULT_VIRTUAL_ENV_NAME)" ]; then \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Results :"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] ${TEXT_GREEN}The execution environment for the use of venv is SUCCESS${RESET_FORMATTING}"; \
+	else \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] To Create the Virtual Environment in your local shell require manual run :"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"; \
+		echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}make create-venv${RESET_FORMATTING}"; \
+	fi \
+
+endif
+
+
 
 # *** check-venv : check the validity of the execution environment for the use of venv***
 check-venv:
@@ -904,22 +1003,16 @@ create-venv-common:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Create Venv Virtual Environment -> ${TEXT_GREEN}$(PYTHON_CMD) -m venv $(VIRTUAL_ENV_NAME)${RESET_FORMATTING}"
 	@$(PYTHON_CMD) -m venv $(VIRTUAL_ENV_NAME)
 
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] To Activate the Virtual Environment in your local shell require manual run :"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@$(MAKE_CMD) info-venv-active-template
 
-ifeq ($(OS_DETECTED),Windows)
-    @echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\tDefault : ${TEXT_GREEN}C:>$(VIRTUAL_ENV_NAME)/Scripts/activate.bat${RESET_FORMATTING}"
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\Powershell : ${TEXT_GREEN}C:>$(VIRTUAL_ENV_NAME)/Scripts/Activate.ps1${RESET_FORMATTING}"
-else
-	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t${TEXT_GREEN}source $(VIRTUAL_ENV_NAME)/bin/activate${RESET_FORMATTING}"
-endif
+
 
 # *** create-venv : create virtual environment for venv use***
 create-venv:
 	@$(MAKE_CMD) initial-template
 	@$(MAKE_CMD) create-venv-common
 	@$(MAKE_CMD) end-template
+
 
 
 
@@ -1089,11 +1182,18 @@ help-test-goals:
 # *** install-test-technology-stack : Install the testing technology stack selected for the version of Python used ***
 install-test-technology-stack:
 	@$(MAKE_CMD) initial-template
+	@$(MAKE_CMD) upgrade-pip
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:install-test-technology-stack${RESET_FORMATTING} ${BOLD}(default-install-test-technology-stack)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "pytest" -> ${TEXT_GREEN}$(PACKAGE_CMD) install pytest${RESET_FORMATTING}"
 	@$(PACKAGE_CMD) install pytest
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "pytest-xdist" -> ${TEXT_GREEN}$(PACKAGE_CMD) install pytest-xdist${RESET_FORMATTING}"
+	@$(PACKAGE_CMD) install pytest-xdist
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Install package "pytest-cov" -> ${TEXT_GREEN}$(PACKAGE_CMD) install pytest-cov${RESET_FORMATTING}"
@@ -1146,6 +1246,9 @@ help-qa-goals:
 # *** install-qa-technology-stack : Install the QA technology stack selected for the version of Python used ***
 install-qa-technology-stack:
 	@$(MAKE_CMD) initial-template
+	@$(MAKE_CMD) upgrade-pip
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:install-qa-technology-stack${RESET_FORMATTING} ${BOLD}(default-install-qa-technology-stack)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
 
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
@@ -1273,7 +1376,6 @@ help-docker-goals:
 
 # *** info-docker-template : Common Template Docker Setting Info***
 info-docker-template:
-	
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Docker Settings"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- DOCKER_VERSION \t\t: ${TEXT_GREEN}$(DOCKER_VERSION)${RESET_FORMATTING}"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- DOCKER_BUILD_CONTEXT \t\t: ${TEXT_GREEN}$(DOCKER_BUILD_CONTEXT)${RESET_FORMATTING}"
@@ -1284,13 +1386,26 @@ info-docker-template-registry:
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- DOCKER_REGISTRY \t\t: ${TEXT_GREEN}$(DOCKER_REGISTRY)${RESET_FORMATTING}"
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- DOCKER_IMAGE \t\t\t: ${TEXT_GREEN}$(DOCKER_IMAGE)${RESET_FORMATTING}"
 
+info-docker-template-build:
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Build Settings"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Module \t\t\t: ${TEXT_GREEN}$(MODULE)${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]\t- Tag \t\t\t\t: ${TEXT_GREEN}$(TAG)${RESET_FORMATTING}"
+
 # *** info-docker : Docker Setting Info***
 info-docker: initial-template
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:info-docker${RESET_FORMATTING} ${BOLD}(default-info-docker)${RESET_FORMATTING} ---"
+	
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@$(MAKE_CMD) info-docker-template-build
+
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@$(MAKE_CMD) info-docker-template
+	
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 	@$(MAKE_CMD) info-docker-template-registry
+
+	
+	
 	@$(MAKE_CMD) end-template
 
 
@@ -1316,18 +1431,19 @@ clean-docker:
 # 		build-docker-dev
 # **********************************
 
-
-
 # make build-dev NAME=victor VERSION=1.0.0
 # *** build-docker-dev : Docker goals ***
 build-docker-dev:
 	@$(MAKE_CMD) initial-template
 	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] --- ${TEXT_GREEN}makefile:build-docker-dev${RESET_FORMATTING} ${BOLD}(default-build-docker-dev)${RESET_FORMATTING} @ ${TEXT_CYAN}${MODULE}${RESET_FORMATTING} ---"
-	@echo -e " - Name: ${TEXT_GREEN}$(NAME)${RESET_FORMATTING}"
-	@echo -e " - Module: ${TEXT_GREEN}$(MODULE)${RESET_FORMATTING}"
-	@echo -e " - Version: ${TEXT_GREEN}$(VERSION)${RESET_FORMATTING}"
-	@echo -e " - Tag: ${TEXT_GREEN}$(TAG)${RESET_FORMATTING}"
-	@echo -e " - DOCKER_IMAGE: ${TEXT_GREEN}$(DOCKER_IMAGE)${RESET_FORMATTING}\n"
+	
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e " - Parameter Name : ${TEXT_GREEN}$(NAME)${RESET_FORMATTING}"
+	@echo -e " - Parameter Version: ${TEXT_GREEN}$(VERSION)${RESET_FORMATTING}"
+
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}] Building Development image with labels -> ${TEXT_GREEN}XXXX${RESET_FORMATTING}"
+	@echo -e "[${TEXT_BLUE}INFO${RESET_FORMATTING}]"
 
 	@sed                                 \
 		-e 's|{NAME}|$(MODULE)|g'        \
