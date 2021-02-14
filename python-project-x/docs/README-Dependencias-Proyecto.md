@@ -58,4 +58,10 @@ kill -9 <PID>
 ```
 
 
+## Recursos Flask
 
+https://github.com/humiaozuzu/awesome-flask
+
+Flask-SQLAlchemy for database interaction.
+Flask-Sessions for user session management.
+Flask-Login to manage user logins.
