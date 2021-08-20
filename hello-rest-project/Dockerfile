@@ -1,0 +1,14 @@
+FROM python:3.9
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends gcc
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY src/ .
+
+CMD [ "python", "./server.py" ]

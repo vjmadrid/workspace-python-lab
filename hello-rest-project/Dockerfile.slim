@@ -1,0 +1,11 @@
+FROM python:3.9-slim
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends gcc
+
+WORKDIR /app
+
+COPY src/ .
+COPY setup.py .
+
+RUN python setup.py install
