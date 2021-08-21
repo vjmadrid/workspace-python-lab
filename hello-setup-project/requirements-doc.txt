@@ -1,0 +1,7 @@
+myst-parser
+pypandoc
+readthedocs-sphinx-search
+sphinx
+sphinx-autobuild
+sphinx_book_theme
+watchdog
