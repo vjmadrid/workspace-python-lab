@@ -1,0 +1,38 @@
+# *************
+#  First stage
+# *************
+FROM python:3.8-slim AS compile-image
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential gcc
+
+RUN python -m venv /opt/venv
+# Make sure we use the virtualenv:
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY requirements.txt .
+
+# install dependencies to the local user directory (eg. /root/.local)
+RUN pip install -r requirements.txt
+
+COPY setup.py .
+COPY myapp/ .
+RUN pip install --user .
+
+
+
+# *************
+#  First stage
+# *************
+FROM python:3.8-slim AS compile-build-image
+
+WORKDIR /app
+
+# copy only the dependencies installation from the 1st stage image
+COPY --from=bcompile-image /opt/venv /opt/venv
+COPY . .
+
+# update PATH environment variable
+ENV PATH="/opt/venv/bin:$PATH"
+
+CMD [ "./bin/make-hello"] 
