@@ -1,3 +1,15 @@
+# hello-project
+
+./sample/ : code module
+LICENSE : Lawyering up
+Setup.py : Package and distribution management
+requirements.txt : Development dependencies.
+./docs/ : Package reference documentation
+./test/ : Package reference documentation
+./Makefile : Generic management tasks
+
+
+
 python setup.py sdist
 
 pip install hello-project-0.1.tar.gz
