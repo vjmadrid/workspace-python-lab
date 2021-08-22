@@ -4,16 +4,16 @@
 # *** MODULES ***
 
 # Option 1 : Import module
-import package.greeting
+import src.package.greeting
 
 # Option 2 : Import module -> specific method
 #from package.greeting import hello
 
 # Option 2.1 : Import module -> * method
-from package.greeting import *
+from src.package.greeting import *
 
 # Option 3 : Import module -> specific Class
-from package.greeting import Greeting
+from src.package.greeting import Greeting
 
 
 if __name__ == '__main__':
@@ -21,13 +21,13 @@ if __name__ == '__main__':
 
     print('*** Examples Use Modules Method ***')
 
-    package.greeting.hello('Hello World -> Import module')
+    src.package.greeting.hello('Hello World -> Import module')
 
     hello('Hello World -> Import module method')
 
     # *** Use Class ***
 
-    exampleGreeting = package.greeting.Greeting()
+    exampleGreeting = src.package.greeting.Greeting()
     exampleGreeting.hello('Hello World -> Class')
 
     exampleGreeting2 = Greeting()
