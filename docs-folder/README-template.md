@@ -22,6 +22,7 @@ Dependencies with architecture projects
 
 Third Party Dependencies
 
+* **XXX** [X.Y] : XXX -> [Pypi](XXX) [Documentation](XXX)
 * **pytest** [X.Y] : Tool used for testing -> [Documentation](https://docs.pytest.org/en/stable/)
 * **pre-commit** [X.Y] : Tool used for creating pre-commit hooks -> [Documentation](http://pre-commit.com/)
 
@@ -37,7 +38,7 @@ Define what elements are needed to install the software
 * Python installed (3.9.x+ version required)
 * Pip installed  (20.0.x+ version required
 
-This was made on `python 3.9.6` and `pip3 20.0.2`.
+This was made on `python 3.9.6` and `pip3 20.0.2`
 
 
 
