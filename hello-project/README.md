@@ -25,6 +25,7 @@ Third Party Dependencies
 * **pycodestyle** [2.7.2] : Framework for checking Python style guide -> [Pypi](https://pypi.org/project/pycodestyle/) [Documentation](https://www.python.org/dev/peps/pep-0008/)
 * **autopep8** [1.5.7] : Framework for formats Python code to conform to the PEP 8 style guide -> [Pypi](https://pypi.org/project/autopep8/)
 * **yapf** [0.31.0] : Framework for formats Python code with ‘clang-format’, -> [Pypi](https://pypi.org/project/yapf/)
+* **black** [21.7b0] : Framework for formats Python code with ‘clang-format’, -> [Pypi](https://pypi.org/project/yapf/)
 
 * **pre-commit** [2.14.0] : Framework for managing and maintaining multi-language pre-commit hooks -> [Pypi](https://pypi.org/project/pre-commit/) [Documentation](https://pre-commit.com/)
 

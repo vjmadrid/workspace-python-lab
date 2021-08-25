@@ -26,6 +26,9 @@ install-dev:
 build-requirements: install
 	pip freeze | grep -v -- '^-e' > requirements.txt
 
+reset-install:
+	pip freeze | xargs pip uninstall -y
+
 
 
 test:

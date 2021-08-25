@@ -1,3 +1,15 @@
+# tox
+tox
+# Unit texting
 pytest
 pytest-cov
 pytest-flake8
+# formatting
+black
+# test coverage
+coverage
+# code quality
+pylint
+mccabe
+# static analysis 
+mypy 

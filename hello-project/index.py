@@ -1,6 +1,4 @@
-
-#!/usr/bin/env python11
-
+# !/usr/bin/env python11
 """Top-level script to invoke helloworld implementation"""
 
 import sys
@@ -8,29 +6,35 @@ import sys
 # *** MODULES ***
 
 # Option 1 : Import module
-import greeting
+#from src.hello import hello
+from src.hello import hello_logging
 
-# Option 2 : Import module -> method
-#from greeting import greeting
+# Option 2 : Import method module
+#from src.hello.hello import hello 
 
-#import src.hello.hello
-#import src.hello
-# Option 2
-#from src.hello import run
+
+# import src.hello.hello
+# import src.hello
+
 # Option 3
-#from src.hello import run.hello
+#from src.hello import run
+# Option 4
+# from src.hello import run.hello
 
 if __name__ == '__main__':
     # *** MODULES ***
 
     # Option 1 : Import module
-    greeting.hello()
+    #hello.hello()
+    hello_logging.hello()
 
-    # Option 2 : Import module -> method
-    #greeting()
 
-    #src.hello.hello.hello()
-    
-    # Option 1
+    # Option 2 : Import method module
+    #hello()
+
+    #src.hello.hello()
+
+    # Option 3 : 
     #print(run.hello())
-    #sys.exit(src.hello.hello.hello())
+    # sys.exit(src.hello.hello.hello())
+
