@@ -3,5 +3,6 @@ pypandoc
 readthedocs-sphinx-search
 sphinx
 sphinx-autobuild
-sphinx_book_theme
+sphinx_book_them
+Sphinx-PyPI-upload==0.2.1e
 watchdog

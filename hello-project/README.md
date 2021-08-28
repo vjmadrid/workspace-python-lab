@@ -21,13 +21,34 @@ Dependencies with architecture projects
 
 Third Party Dependencies
 
+* **flake8** [3.9.2] : Framework that is a wrapper of differentes tools -> [Pypi](https://pypi.org/project/flake8/) [Documentation](https://flake8.pycqa.org/en/latest/index.html#quickstart)
+    * Include 
+        * **pycodestyle** [2.7.0] : Framework for checking Python style guide -> [Pypi](https://pypi.org/project/pycodestyle/) [Documentation](https://www.python.org/dev/peps/pep-0008/)
+        * **pyflakes** [2.3.1] : Framework for checking Python error about source files -> [Pypi](https://pypi.org/project/pyflakes/) [Documentation](https://github.com/PyCQA/pyflakes)
+        * **mccabe** [0.6.1] : Framework for checking Python with McCabe complexity -> [Pypi](https://pypi.org/project/mccabe/) [Documentation](https://github.com/pycqa/mccabe)
+    * Supports storing its configuration in the following places :setup.cfg, tox.ini, or .flake8 (Flake8 looks for ~\.flake8 on Windows and ~/.config/flake8 on Linux and other Unix systems)
+* **pylint** [2.10.2] : Framework checking programming errors, coding starndar, code smells, etc. -> [Pypi](https://pypi.org/project/pylint/) [Documentation](https://github.com/PyCQA/pylint) [Documentation2](http://pylint.pycqa.org/en/latest/)
+* **pylint** [2.14.0] : Framework for managing and maintaining multi-language pre-commit hooks -> [Pypi](https://pypi.org/project/pre-commit/) [Documentation](https://pre-commit.com/)
 
-* **pycodestyle** [2.7.2] : Framework for checking Python style guide -> [Pypi](https://pypi.org/project/pycodestyle/) [Documentation](https://www.python.org/dev/peps/pep-0008/)
+python -m pylint src
+	# python -m mypy src
+
+
+
+
+
+
+
 * **autopep8** [1.5.7] : Framework for formats Python code to conform to the PEP 8 style guide -> [Pypi](https://pypi.org/project/autopep8/)
 * **yapf** [0.31.0] : Framework for formats Python code with ‘clang-format’, -> [Pypi](https://pypi.org/project/yapf/)
 * **black** [21.7b0] : Framework for formats Python code with ‘clang-format’, -> [Pypi](https://pypi.org/project/yapf/)
 
-* **pre-commit** [2.14.0] : Framework for managing and maintaining multi-language pre-commit hooks -> [Pypi](https://pypi.org/project/pre-commit/) [Documentation](https://pre-commit.com/)
+
+
+
+autopep8
+yapf
+black
 
 * **XXX** [X.Y] : XXX -> [Pypi](XXX) [Documentation](XXX)
 

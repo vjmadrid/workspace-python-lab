@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from . import helpers
+from . import helper
 
 
 def get_hello_world_msg():
@@ -9,5 +9,5 @@ def get_hello_world_msg():
 
 
 def hello():
-    if helpers.get_answer():
+    if helper.get_answer():
         print(get_hello_world_msg())

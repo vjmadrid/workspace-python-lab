@@ -1,8 +1,10 @@
 def hello():
-    print('Hello World')
+    print('Hello World -> Default method')
 
-def hello(msg):
+
+def hello_message(msg):
     print(msg)
+
 
 class Greeting():
 
@@ -10,7 +12,7 @@ class Greeting():
         pass
 
     def hello(self):
-        print('Hello World')
+        print('Hello World -> Default method class')
 
-    def hello(self, msg):
+    def hello_message(self, msg):
         print(msg)
