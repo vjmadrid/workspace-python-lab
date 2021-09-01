@@ -1,0 +1,22 @@
+# Keys
+title = "Project TOML Config"
+
+[app]
+environment = "development"
+debug = false
+
+[logging]
+log_config_file = "config/logging.yaml"
+log_main_level = "logging.INFO"
+
+[files]
+static_folder = "static"
+templates_folder = "templates"
+
+[environments]
+  [environments.dev]
+    environment = "development"
+  [environments.stage]
+    environment = "staging"
+  [environments.pro]
+    environment = "production"

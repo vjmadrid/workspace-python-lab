@@ -1,0 +1,43 @@
+---
+version: 1
+disable_existing_loggers: False
+formatters:
+  console_formatter:
+    format: "[%(levelname)s]: %(message)s"
+  file_formatter:
+    format: "[%(levelname)s]:%(asctime)s:%(module)s:%(lineno)d:%(name)s:%(message)s"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: console_formatter
+    stream: ext://sys.stdout
+
+  info_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: file_formatter
+    filename: ./logs/song_scraper.log
+    maxBytes: 10485760 # 10MB
+    backupCount: 20
+    encoding: utf8
+
+  error_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: file_formatter
+    filename: ./logs/errors-song_scraper.log
+    maxBytes: 10485760 # 10MB
+    backupCount: 20
+    encoding: utf8
+
+loggers:
+  my_module:
+    level: ERROR
+    handlers: [console]
+    propagate: no
+
+root:
+  level: INFO
+  handlers: [console, info_file_handler, error_file_handler]
