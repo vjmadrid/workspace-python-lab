@@ -1,5 +1,23 @@
 .DEFAULT_GOAL := help
 
+
+
+# *** CLEAN ***
+
+clean-build: ## Remove elements for build
+	find . -name '__pycache__' -type d | xargs rm -fr
+	find . -name '.pytest_cache' -type d | xargs rm -fr
+	find . -name '*.pytest_cache' -type d | xargs rm -fr
+	find . -name '*.pyc' -type d | xargs rm -fr
+
+clean-distribute: clean-build ## Remove *.egg-info files and *.egg, build and dist directories
+	rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info ./*.egg
+	find . -name '*.egg-info/' -type d | xargs rm -fr
+
+clean : clean-distribute ## Remove *.pyc files and __pycache__ directory
+
+
+
 # *** GENERAL ***
 
 upgrade: ## Upgrade Python modules : pip and setuptools
@@ -64,19 +82,7 @@ show-content:
 	cp ./dist/acme-common-0.0.1.tar.gz ../
 
 
-# *** CLEAN ***
 
-clean-build: ## Remove elements for build
-	find . -name '__pycache__' -type d | xargs rm -fr
-	find . -name '.pytest_cache' -type d | xargs rm -fr
-	find . -name '*.pytest_cache' -type d | xargs rm -fr
-	find . -name '*.pyc' -type d | xargs rm -fr
-
-clean-distribute: clean-build ## Remove *.egg-info files and *.egg, build and dist directories
-	rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info ./*.egg
-	find . -name '*.egg-info/' -type d | xargs rm -fr
-
-clean : clean-distribute ## Remove *.pyc files and __pycache__ directory
 
 
 help: ## Show help message

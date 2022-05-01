@@ -29,7 +29,7 @@ def hello():
         logger.info('Hello World '+ str(value))
 
 
-def hello_execption():
+def hello_exception():
     try:
         open('/path/to/does/not/exist', 'rb')
     except (SystemExit, KeyboardInterrupt):
