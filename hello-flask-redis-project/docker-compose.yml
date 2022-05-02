@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on: 
+      - redis
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379    
+    networks:
+      - custom-networks
+
+  redis:
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes: 
+      - redis:/data
+    networks:
+      - custom-networks
+
+volumes:
+  redis:
+    driver: local
+
+networks:
+  custom-networks: 
