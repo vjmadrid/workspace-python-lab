@@ -61,7 +61,7 @@ local-venv-create: #Create Virtual Environment
 	python3 -m venv $(VIRTUAL_LOCAL_ENV_NAME)
 
 local-venv-upgrade: ##Upgrade Virtual Environment Pip
-	$(VIRTUAL_LOCAL_ENV_NAME)/bin/pip install --upgrade pip
+	$(VIRTUAL_LOCAL_ENV_NAME)/bin/pip install --upgrade pip wheel
 
 local-venv-remove: ##Remove Local Virtual Environment
 	@rm -rf ./$(VIRTUAL_LOCAL_ENV_NAME)
