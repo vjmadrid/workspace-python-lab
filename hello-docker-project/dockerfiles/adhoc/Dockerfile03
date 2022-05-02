@@ -1,0 +1,41 @@
+FROM python:3.9-alpine
+
+
+# ***************************
+# *** Prepare Environment ***
+# ***************************
+
+
+
+# ********************
+# *** Prepare Code ***
+# ********************
+
+# Option 2
+WORKDIR /app
+
+COPY * .
+
+
+
+# ****************************
+# *** Prepare Dependencies ***
+# ****************************
+
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && apt update && apt install -y git \
+    && cd /app \
+    && pip install --no-cache-dir .[colorama,d] \
+    && rm -rf /app \
+    && apt remove -y git \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# ***************
+# *** Execute ***
+# ***************
+
+CMD ["python", "main.py"]
+# CMD [ "./bin/make-main"] 

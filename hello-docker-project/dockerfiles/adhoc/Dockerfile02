@@ -1,0 +1,37 @@
+FROM python:3.9-alpine
+
+
+# ***************************
+# *** Prepare Environment ***
+# ***************************
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends gcc
+
+
+
+# ********************
+# *** Prepare Code ***
+# ********************
+
+# Option 2
+WORKDIR /app
+
+COPY * .
+
+
+
+# ****************************
+# *** Prepare Dependencies ***
+# ****************************
+
+# RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+
+
+# ***************
+# *** Execute ***
+# ***************
+
+CMD ["python", "main.py"]
+# CMD [ "./bin/make-main"] 

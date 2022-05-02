@@ -1,6 +1,0 @@
-pre-commit
-
-pycodestyle
-autopep8
-yapf
-black

@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -23,5 +22,17 @@ logger.addHandler(handler)
 
 
 def hello():
-    logger.info('Hello World!!!')
-    print ("'Hello World!!!' ", datetime.now())
+    logger.debug('Start Logging Hello World')
+
+    num = 1
+    for value in range(10):
+        logger.info('Hello World '+ str(value))
+
+
+def hello_exception():
+    try:
+        open('/path/to/does/not/exist', 'rb')
+    except (SystemExit, KeyboardInterrupt):
+        raise
+    except Exception as exception:
+        logger.error('Failed to open file', exc_info=True)
