@@ -1,11 +1,36 @@
+# Pull official base image
 FROM python:3.9-alpine
 
 
 # ***************************
 # *** Prepare Environment ***
 # ***************************
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends gcc
+
+# Set environment variables
+ENV \
+    # python
+    PYTHONFAULTHANDLER=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=120 \
+    # env
+    #VENV_PATH="/opt/venv" \
+    #PATH="${VENV_PATH}/bin:${PATH}" \
+    # app
+    APP_HOME=/app
+
+# Install system dependencies
+#   - Option 1
+#RUN apt-get update
+#RUN apt-get install -y --no-install-recommends gcc
+
+#   - Option 2
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends netcat
 
 
 
@@ -13,9 +38,10 @@ RUN apt-get install -y --no-install-recommends gcc
 # *** Prepare Code ***
 # ********************
 
-# Option 2
-WORKDIR /app
+# Set work directory
+WORKDIR $APP_HOME
 
+# Copy project
 COPY * .
 
 
@@ -24,8 +50,16 @@ COPY * .
 # *** Prepare Dependencies ***
 # ****************************
 
-# RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Install dependencies to the local user directory (eg. /root/.local)
+#   - Option 1
+#RUN pip install --upgrade pip setuptools wheel
+#RUN pip install -r requirements.txt
+#RUN rm -rf /var/lib/apt/lists/*
+
+#   - Option 2
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install -r requirements.txt \
+    && rm -rf /var/lib/apt/lists/*
 
 
 
@@ -33,5 +67,8 @@ RUN pip install -r requirements.txt
 # *** Execute ***
 # ***************
 
+# Run python
 CMD ["python", "main.py"]
+
+# Run makefile
 # CMD [ "./bin/make-main"] 

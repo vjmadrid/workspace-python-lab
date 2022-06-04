@@ -1,9 +1,28 @@
+# Pull official base image
 FROM python:3.9-alpine
+
 
 
 # ***************************
 # *** Prepare Environment ***
 # ***************************
+
+# Set environment variables
+ENV \
+    # python
+    PYTHONFAULTHANDLER=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=120 \
+    # env
+    #VENV_PATH="/opt/venv" \
+    #PATH="${VENV_PATH}/bin:${PATH}" \
+    # app
+    APP_HOME=/app
 
 
 
@@ -11,14 +30,16 @@ FROM python:3.9-alpine
 # *** Prepare Code ***
 # ********************
 
-# Option 1
+# Set work directory
+#   - Option 1
 #RUN mkdir /app
 #ADD . /app
 #WORKDIR /app
 
-# Option 2
-WORKDIR /app
+#   - Option 2
+WORKDIR $APP_HOME
 
+# Copy project
 COPY * .
 
 
@@ -27,8 +48,10 @@ COPY * .
 # *** Prepare Dependencies ***
 # ****************************
 
-# RUN pip install --upgrade pip
+# Install dependencies to the local user directory (eg. /root/.local)
+# RUN pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
+RUN rm -rf /var/lib/apt/lists/*
 
 
 
@@ -36,5 +59,8 @@ RUN pip install -r requirements.txt
 # *** Execute ***
 # ***************
 
+# Run python
 CMD ["python", "main.py"]
+
+# Run makefile
 # CMD [ "./bin/make-main"] 
