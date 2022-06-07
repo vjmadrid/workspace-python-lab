@@ -1,11 +1,16 @@
+# Pull official base image
 FROM arm32v7/python:3.9-alpine
 
-RUN mkdir /app
-
-ADD . /app
-
+# Set work directory
 WORKDIR /app
 
+# Install dependencies
+RUN pip install --upgrade pip
+COPY requirements.txt /app
 RUN pip install -r requirements.txt
 
-CMD ["python", "main.py"]
+# Copy project
+COPY app.py $APP_HOME
+
+# Run python3
+CMD ["python", "app.py"]

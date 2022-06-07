@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:alpine
+    env_file: .env
+    depends_on:
+      - app
+    networks: [local]
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/flask
+      - ./docker/nginx/flask.conf:/etc/nginx/conf.d/flask.conf
+
+  app:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      target: development
+    env_file: .env
+    networks: [local]
+    volumes:
+      - ./:/flask
+
+networks:
+  local:

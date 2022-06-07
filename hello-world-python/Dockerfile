@@ -1,12 +1,28 @@
+# Pull official base image
 FROM python:3.9-alpine
 
-RUN mkdir /app
+# Set environment variables
+ARG ENV=local
 
-ADD . /app
+ENV ENV=${ENV} \
+    # python
+    PYTHONFAULTHANDLER=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    # app
+    APP_HOME=/app
 
-WORKDIR /app
+# Set work directory
+WORKDIR $APP_HOME
 
+# Install dependencies
 RUN pip install --upgrade pip
+COPY requirements.txt $APP_HOME
 RUN pip install -r requirements.txt
 
-CMD ["python", "main.py"]
+# Copy project
+COPY app.py $APP_HOME
+
+# Run python3
+CMD ["python", "app.py"]
