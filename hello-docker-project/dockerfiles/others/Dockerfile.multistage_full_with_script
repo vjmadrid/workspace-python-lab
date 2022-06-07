@@ -1,0 +1,97 @@
+# *************
+#    Builder
+# *************
+
+# Pull official base image
+FROM python:3.9.13-slim-buster AS builder
+
+# Set environment variables
+ENV \
+    # python
+    PYTHONFAULTHANDLER=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=120 \
+    # env
+    #VENV_PATH="/opt/venv" \
+    #PATH="${VENV_PATH}/bin:${PATH}" \
+    # app
+    APP_HOME=/app
+
+# Install system dependencies
+RUN apt-get update
+
+# Set work directory
+WORKDIR $APP_HOME
+
+# Install dependencies to the local user directory (eg. /root/.local)
+RUN pip install --upgrade pip setuptools wheel
+COPY requirements.txt $APP_HOME
+RUN pip install -r requirements.txt
+
+
+# *************
+#    Base
+# *************
+
+# Pull official base image
+FROM builder AS base
+
+# Copy only the dependencies installation from the builder image
+#COPY --from=builder /root/.local /root/.local
+
+# Copy only environment variablees from the builder image
+COPY --from=builder $APP_HOME $APP_HOME
+
+# Create the app user
+RUN addgroup --system app && adduser --system --group app
+
+# Set work directory
+WORKDIR $APP_HOME
+
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y netcat
+
+# Copy project
+COPY configs $APP_HOME/configs
+COPY src $APP_HOME/src
+COPY app.py setup.cfg $APP_HOME
+
+# Copy entrypoint.sh
+COPY entrypoint.sh $APP_HOME
+RUN chmod +x /app/entrypoint.sh
+
+# Chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# Change to the app user
+USER app
+
+
+
+
+# *****************
+#    Development
+# *****************
+
+# Pull official base image
+FROM base AS development
+
+# Set environment variables
+ARG ENV=development
+
+ENV ENV=${ENV} \
+    # app
+    FLASK_ENV=${ENV} \
+    PYTHONPATH="src" \
+    SERVER_HOST="0.0.0.0"
+
+# Run entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+

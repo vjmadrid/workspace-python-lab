@@ -1,28 +1,44 @@
 # Pull official base image
 FROM python:3.9.13-slim-buster
 
-# Set work directory
-WORKDIR /app
-
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "src"
-ENV SERVER_HOST "0.0.0.0"
+ARG ENV=local
+
+ENV ENV=${ENV} \
+    # python
+    PYTHONFAULTHANDLER=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    # pip
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=120 \
+    # app
+    APP_HOME=/app \
+    PYTHONPATH="src" \
+    SERVER_HOST="0.0.0.0"
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends netcat
 
-# Install dependencies
-RUN pip install --upgrade pip
-COPY requirements.txt /app
+# Set work directory
+WORKDIR $APP_HOME
+
+# Install dependencies to the local user directory (eg. /root/.local)
+RUN pip install --upgrade pip setuptools wheel
+COPY requirements.txt $APP_HOME
 RUN pip install -r requirements.txt
 
 # Copy project
-COPY configs /app/configs
-COPY src /app/src
-COPY app.py wsgi.py entrypoint-gunicorn.sh setup.cfg /app/
-RUN chmod +x /app/entrypoint-gunicorn.sh
+COPY configs $APP_HOME/configs
+COPY src $APP_HOME/src
+COPY app.py wsgi.py setup.cfg $APP_HOME
+
+# Copy entrypoint.sh
+COPY entrypoint-gunicorn.sh $APP_HOME
+RUN chmod +x $APP_HOME/entrypoint-gunicorn.sh
 
 # Run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint-gunicorn.sh"]
