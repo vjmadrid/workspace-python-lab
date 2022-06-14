@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+
+   iam:
+      #image: simon/iam-api-py
+      build:
+         context: ./
+         dockerfile: Dockerfile.entrypoint
+      hostname: iam
+      container_name: iam
+      environment: 
+         FLASK_ENV: testing
+      #env_file:
+      #   - ./configs/.env.dev
+      networks: [local]
+      ports:
+         - 8080:8080
+      volumes:
+         - ./docker-volume/iam-volume/logs:/app/logs
+      
+
+   nginx:
+      #image: nginx:alpine
+      build:
+         context: ./nginx
+         dockerfile: Dockerfile
+      container_name: nginx
+      depends_on:
+         - iam
+      networks: [local]
+      ports:
+         - 80:80
+      #volumes:
+         #- ./:/flask
+         #- ./docker-volume/nginx-volume/nginx.conf:/etc/nginx/conf.d/nginx.conf
+
+networks:
+   local:

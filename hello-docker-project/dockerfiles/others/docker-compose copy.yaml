@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+
+   iam:
+      #image: simon/iam-api-py
+      build:
+         context: ./
+         dockerfile: Dockerfile.entrypoint
+      hostname: iam
+      container_name: iam
+      #command: python app.py run -h 0.0.0.0
+      #command: gunicorn --bind 0.0.0.0:5000 manage:app
+      #environment: 
+      #   FLASK_ENV: testing
+      env_file:
+         - ./.env.dev
+      ports:
+         - '8080:8080'
+      volumes:
+         - ./iam/logs:/app/logs
