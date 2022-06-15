@@ -1,5 +1,5 @@
 # Pull official base image
-FROM python:3
+FROM python:3.9.13-slim-buster
 
 
 # Set environment variables
@@ -11,10 +11,6 @@ ENV ENV=${ENV} \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
-    # pip
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=120 \
     # app
     APP_HOME=/app \
     PYTHONPATH="src" \
@@ -28,15 +24,12 @@ RUN apt-get update \
 WORKDIR $APP_HOME
 
 # Install dependencies to the local user directory (eg. /root/.local)
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 COPY requirements.txt $APP_HOME/
 RUN pip install -r requirements.txt
 
 # Copy project
 COPY app.py $APP_HOME/
-COPY wsgi.py $APP_HOME/
-COPY uwsgi.ini $APP_HOME/
 
-# Run uwsgi
-#   - Require : pip install uwsgi
-CMD ["uwsgi", "--ini", "uwsgi.ini"]
+# Run python3
+CMD ["python", "app.py"]
