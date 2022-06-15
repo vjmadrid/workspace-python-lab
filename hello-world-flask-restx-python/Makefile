@@ -5,20 +5,34 @@ VIRTUAL_LOCAL_ENV_NAME := venv
 EXECUTION_DIRECTORY_BY_ENVIRONMENT := bin
 EXECUTION_PATH := $(VIRTUAL_LOCAL_ENV_NAME)/$(EXECUTION_DIRECTORY_BY_ENVIRONMENT)
 
+PYTHON := $(EXECUTION_PATH)/python3
+PIP := $(EXECUTION_PATH)/pip
+
 # Docker Configuration
 
-IMAGE_NAME := acme/hello-world-python
-CONTAINER_NAME := hello-world-python
+IMAGE_NAME := acme/hello-world-flask-restx-python
+CONTAINER_NAME := hello-world-flask-restx-python
 
-venv:
+
+
+init-venv:
+	@make create-venv
+	$(PIP) install -r requirements.txt
+
+upgrade-venv:
+	$(PIP) install --upgrade pip setuptools wheel
+
+create-venv:
 	python3 -m venv $(VIRTUAL_LOCAL_ENV_NAME)
-	$(EXECUTION_PATH)/pip install -r requirements.txt
+	@make upgrade-venv
 
 venv-upgrade:
-	$(EXECUTION_PATH)/pip install --upgrade pip
+	$(PIP) install --upgrade pip
 
 run: venv
-	$(EXECUTION_PATH)/python app.py
+	$(PYTHON) app.py
+
+
 
 docker-build:
 	docker build --no-cache	-t $(IMAGE_NAME) .
@@ -33,7 +47,7 @@ docker-stop: ##Execute docker stop
 	ID=$$(docker ps -f name=$(CONTAINER_NAME) |tail -1 |colrm 12) && docker stop $$ID
 
 docker-logs: ##Execute docker logs
-	ID=$$(docker ps -f name=$(CONTAINER_NAME) |tail -1 |colrm 12) && docker logs $$ID
+	ID=$$(docker ps -a -f name=$(CONTAINER_NAME) |tail -1 |colrm 12) && docker logs $$ID
 
 docker-ssh: ##Execute docker image with ssh
 	ID=$$(docker ps -f name=$(CONTAINER_NAME) |tail -1 |colrm 12) && docker exec -it $$ID bash

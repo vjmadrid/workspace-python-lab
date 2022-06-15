@@ -1,9 +1,6 @@
 # Pull official base image
 FROM python:3.9.13-slim-buster
 
-# Create the app user
-RUN addgroup --system app && adduser --system --group app
-
 # Set environment variables
 ARG ENV=local
 
@@ -13,10 +10,6 @@ ENV ENV=${ENV} \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
-    # pip
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=120 \
     # app
     APP_HOME=/app \
     PYTHONPATH="src" \
@@ -35,19 +28,7 @@ COPY requirements.txt $APP_HOME/
 RUN pip install -r requirements.txt
 
 # Copy project
-COPY configs $APP_HOME/configs
-COPY src $APP_HOME/src
-COPY app.py setup.cfg $APP_HOME
+COPY app.py $APP_HOME/
 
-# Copy entrypoint.sh
-COPY entrypoint.sh $APP_HOME
-RUN chmod +x $APP_HOME/entrypoint.sh
-
-# Chown all the files to the app user
-RUN chown -R app:app $APP_HOME
-
-# Change to the app user
-USER app
-
-# Run entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Run python3
+CMD ["python", "app.py"]
