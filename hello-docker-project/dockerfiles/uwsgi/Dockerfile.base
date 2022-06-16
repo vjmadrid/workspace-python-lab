@@ -36,7 +36,3 @@ RUN pip install -r requirements.txt
 COPY app.py $APP_HOME/
 COPY wsgi.py $APP_HOME/
 COPY uwsgi.ini $APP_HOME/
-
-# Run uwsgi
-#   - Require : pip install uwsgi
-CMD ["uwsgi", "--ini", "uwsgi.ini"]

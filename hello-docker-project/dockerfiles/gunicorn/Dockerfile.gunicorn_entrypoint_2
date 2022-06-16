@@ -1,6 +1,8 @@
 # Pull official base image
 FROM python:3.9.13-slim-buster
 
+RUN adduser -D customuser
+
 # Set environment variables
 ARG ENV=local
 
@@ -28,17 +30,19 @@ WORKDIR $APP_HOME
 
 # Install dependencies to the local user directory (eg. /root/.local)
 RUN pip install --upgrade pip setuptools wheel
-COPY requirements.txt $APP_HOME
+COPY requirements.txt $APP_HOME/
 RUN pip install -r requirements.txt
 
 # Copy project
-COPY configs $APP_HOME/configs
-COPY src $APP_HOME/src
-COPY app.py wsgi.py setup.cfg $APP_HOME
+COPY app.py $APP_HOME/
+COPY wsgi.py $APP_HOME/
 
 # Copy entrypoint.sh
-COPY entrypoint-gunicorn.sh $APP_HOME
+COPY entrypoint-gunicorn.sh $APP_HOME/
 RUN chmod +x $APP_HOME/entrypoint-gunicorn.sh
+
+RUN chown -R customuser:customuser ./
+USER customuser
 
 # Run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint-gunicorn.sh"]

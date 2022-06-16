@@ -20,16 +20,22 @@ services:
          - ./docker-volume/hello-volume/logs:/app/logs
 
    nginx:
-      image: nginx:1.15
+      #image: nginx:alpine
+      build:
+         context: ./nginx
+         dockerfile: Dockerfile.1
       container_name: nginx-hello
+      restart: always
       depends_on:
          - hello
       networks:
          - custom-network
       ports:
-         - 81:80
+         - 80:80
       volumes:
-         - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+         - ./docker-volume/nginx-volume/logs:/var/log/nginx/
+         #- ./:/flask
+         #- ./docker-volume/nginx-volume/nginx.conf:/etc/nginx/conf.d/nginx.conf
 
 
 networks:

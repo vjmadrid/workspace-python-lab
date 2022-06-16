@@ -1,11 +1,9 @@
 server {
-
     listen 80;
     server_name localhost;
 
-    location /hello {
+    location / {
         include uwsgi_params;
-        uwsgi_pass hello:8080;
+        uwsgi_pass unix:///tmp/flask.sock;
     }
-
 }

@@ -37,11 +37,11 @@ run: venv
 docker-build:
 	docker build --no-cache	-t $(IMAGE_NAME) .
 
-docker-build-nginx:
-	docker build --no-cache	-t $(IMAGE_NAME) -f Dockerfile.nginx .
+docker-build-gunicorn:
+	docker build --no-cache	-t $(IMAGE_NAME) -f Dockerfile.gunicorn_entrypoint .
 
 docker-run:
-	docker run --name $(CONTAINER_NAME) -p 5000:9090 -d $(IMAGE_NAME)
+	docker run --name $(CONTAINER_NAME) -p 5000:5000 -d $(IMAGE_NAME)
 
 docker-stop: ##Execute docker stop
 	ID=$$(docker ps -f name=$(CONTAINER_NAME) |tail -1 |colrm 12) && docker stop $$ID
