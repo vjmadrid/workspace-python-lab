@@ -16,8 +16,6 @@ services:
                - hello-app
       ports:
          - '5000:5000'
-      volumes:
-         - ./docker-volume/hello-volume/logs:/app/logs
 
    nginx:
       #image: nginx:alpine
@@ -32,11 +30,10 @@ services:
          - custom-network
       ports:
          - 80:80
-      volumes:
-         - ./docker-volume/nginx-volume/logs:/var/log/nginx/
+      #volumes:
+         #- ./docker-volume/nginx/logs:/var/log/nginx/
          #- ./:/flask
          #- ./docker-volume/nginx-volume/nginx.conf:/etc/nginx/conf.d/nginx.conf
-
 
 networks:
    custom-network:

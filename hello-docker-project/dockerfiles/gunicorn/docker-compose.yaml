@@ -9,7 +9,8 @@ services:
       hostname: hello
       container_name: hello
       #command: python app.py run -h 0.0.0.0
-      command: gunicorn --workers 2 --threads 2 --bind 0.0.0.0:5000 wsgi:app
+      #command: gunicorn --workers 2 --threads 2 --bind 0.0.0.0:5000 wsgi:app
+      command: gunicorn --workers 2 --threads 2 --bind 0.0.0.0:5000 wsgi:app --access-logfile -
       environment: 
          FLASK_ENV: testing
       networks:
