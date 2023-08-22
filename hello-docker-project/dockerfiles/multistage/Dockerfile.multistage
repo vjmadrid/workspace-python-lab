@@ -18,7 +18,7 @@ RUN pip install --user -r requirements.txt
 
 
 # *************
-#  First stage
+#  Second stage
 # *************
 FROM python:3.8-slim
 

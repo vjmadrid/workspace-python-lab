@@ -51,9 +51,9 @@ RUN python -m venv ${VENV_PATH} \
 
 # ***************
 # *** Execute ***
-# *************
+# ***************
 
 # Run python
 
 # Run makefile
-# CMD [ "./bin/make-main"] 
+# CMD [ "./bin/make-main"]

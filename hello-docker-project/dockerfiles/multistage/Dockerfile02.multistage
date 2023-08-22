@@ -1,0 +1,22 @@
+
+# Define version
+# Use: docker build --build-arg python_version=3.9
+ARG python_version
+FROM python:${python_version}-alpine AS base
+
+# *************
+#  First stage
+# *************
+FROM base AS builder
+COPY requirements.txt /tmp/
+RUN pip install --target=/tmp/build --no-deps -r /tmp/requirements.txt
+
+# *************
+#  Second stage
+# *************
+FROM base
+ARG python_version
+WORKDIR /opt/project/
+COPY --from=builder /tmp/build/ /usr/local/lib/python${python_version}/site-packages/
+COPY project/ project/
+CMD ["python", "-m", "project"]

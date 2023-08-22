@@ -71,4 +71,4 @@ RUN pip install --upgrade pip setuptools wheel \
 CMD ["python", "main.py"]
 
 # Run makefile
-# CMD [ "./bin/make-main"] 
+# CMD [ "./bin/make-main"]
